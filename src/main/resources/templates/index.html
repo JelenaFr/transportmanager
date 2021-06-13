@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<p>Click the button to get your coordinates.</p>
+<button onclick="getLocation()">Try It</button>
+<p id="demo"></p>
+<br>
+<form id="userArea" >
+    <select id="areaSelect" onchange="postUserArea()"  method="post"></select>
+    <select id="stopSelect" onchange="postUserArea()"  method="post"></select>
+</form>
+<br>
+
+<!--<div id="map"></div>-->
+
+
+<script>
+    const x = document.getElementById("demo");
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+    }
+
+</script>
+<script>
+    const request = new XMLHttpRequest();
+    const url = 'http://localhost:8080/area';
+    request.open("GET", url);
+    request.send();
+    request.onload = () => {
+        const s = document.getElementById('areaSelect');
+        const opts = request.response;
+        const arrArea = JSON.parse(opts);
+        arrArea.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`);
+    }
+</script>
+
+
+
+
+<script>
+
+
+    function postUserArea() {
+        const areaInput  = document.getElementById("areaSelect").value;
+        console.log(areaInput);
+    }
+</script>
+
+
+
+
+</body>
+</html>
