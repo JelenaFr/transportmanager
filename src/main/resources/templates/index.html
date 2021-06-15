@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 </head>
 <body>
 
@@ -11,9 +15,9 @@
 <button onclick="getLocation()">Try It</button>
 <p id="demo"></p>
 <br>
-<form id="userArea" >
-    <select id="areaSelect" onchange="postUserArea()"  method="post"></select>
-    <select id="stopSelect" onchange="postUserArea()"  method="post"></select>
+<form id="userArea">
+    <select id="areaSelect" onchange="postUserArea()"></select>
+    <select id="stopSelect" onchange="postUserStop()"></select>
 </form>
 <br>
 
@@ -22,6 +26,7 @@
 
 <script>
     const x = document.getElementById("demo");
+
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -29,6 +34,7 @@
             x.innerHTML = "Geolocation is not supported by this browser.";
         }
     }
+
     function showPosition(position) {
         x.innerHTML = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude;
@@ -41,26 +47,21 @@
     request.open("GET", url);
     request.send();
     request.onload = () => {
-        const s = document.getElementById('areaSelect');
         const opts = request.response;
         const arrArea = JSON.parse(opts);
         arrArea.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`);
     }
-</script>
 
-
-
-
-<script>
-
-
-    function postUserArea() {
+      function postUserArea() {
         const areaInput  = document.getElementById("areaSelect").value;
         console.log(areaInput);
+        //$.ajax ({type: "POST", url: 'http://localhost:8080/res/', data: areaInput}  );
+        $.ajax({type: "GET", url: 'http://localhost:8080/stop/', data: areaInput
+        }).done( function (response){response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
+
+        })
     }
 </script>
-
-
 
 
 </body>

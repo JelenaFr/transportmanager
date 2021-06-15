@@ -10,11 +10,13 @@ import java.util.List;
 
 @Repository
 public interface StopRepository extends CrudRepository<Stop, Integer> {
-    @Query("SELECT DISTINCT (a.stopArea) FROM Stop a")
+    @Query("SELECT DISTINCT a.stopArea FROM Stop a")
     List<String> findUniqueStopAreas();
 
-//    @Query ("SELECT DISTINCT (a.stopArea) FROM Stop a WHERE ")
-    List<Stop> findStopsByStopArea(String stopArea);
+
+    @Query("SELECT DISTINCT a.stopName FROM Stop a WHERE a.stopArea = ?1")
+    List<String> findStopsByStopArea(String areaInput);
+
 
 }
 

@@ -36,6 +36,11 @@ public class TransportSystemService {
         return stopRepository.findUniqueStopAreas().stream().sorted().collect(Collectors.toList());
     }
 
+    public List<String> findallStopsThisArea(String s) {
+        stopRepository.findStopsByStopArea(s).forEach(System.out::println);
+        return stopRepository.findStopsByStopArea(s);
+    }
+
 //    public Iterable<Object> findUserStops() {
 //    }
 }
