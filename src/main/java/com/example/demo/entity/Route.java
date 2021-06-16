@@ -34,7 +34,7 @@ public class Route {
     private String routeColor;
     @Column (name = "competent_authority")
     private String competentAuthority;
-    private Date times;
+    private Date time;
 
 
 
