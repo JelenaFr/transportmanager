@@ -20,15 +20,21 @@ import java.util.Date;
 @Table(name = "routes")
 public class Route {
     @Id
-    @Column (name = "route_id" )
+    @Column (name = "route_id")
     private String id;
+    @Column (name = "agency_id")
     private Integer agencyId;
-    private String routShortName;
-    private String routLongName;
-    private Integer routType;
-    private String routColor;
-    private String competent_authority;
-    private Date timestamp;
+    @Column (name = "route_short_Name")
+    private String routeShortName;
+    @Column (name = "route_long_Name")
+    private String routeLongName;
+    @Column (name = "route_type")
+    private Integer routeType;
+    @Column (name = "route_color")
+    private String routeColor;
+    @Column (name = "competent_authority")
+    private String competentAuthority;
+    private Date times;
 
 
 

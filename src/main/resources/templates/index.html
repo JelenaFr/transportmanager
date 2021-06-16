@@ -12,33 +12,60 @@
 
 
 <p>Click the button to get your coordinates.</p>
-<button onclick="getLocation()">Try It</button>
-<p id="demo"></p>
-<br>
-<form id="userArea">
-    <select id="areaSelect" onchange="postUserArea()"></select>
-    <select id="stopSelect" onchange="postUserStop()"></select>
-</form>
+<!--<button onclick="getLocation()">Try It</button>-->
+<!--<p id="demo"></p>-->
 <br>
 
-<!--<div id="map"></div>-->
+
+<form id="userArea">
+    <input list="areaSelect" id="areaSearch" onchange="postUserArea()" name="areaSearch">
+    <datalist id="areaSelect"></datalist>
+    <input list="stopSelect" id="stopSearch" name="stopSearch">
+    <datalist id="stopSelect" onchange="postUserStop()"></datalist>
+    <button id="btn" type="submit">Confirm</button>
+    <input type="reset" value="New search" />
+</form>
+<br>
 
 
 <script>
     const x = document.getElementById("demo");
+    const button = document.getElementById("btn");
+    const queryForm =document.getElementById("userArea");
+    let userLatitude;
+    let userLongitude;
+    const stopInput = document.getElementById("stopSearch").value;
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
+    navigator.geolocation.getCurrentPosition(showLocation);
+    function showLocation(position) {
+        userLatitude = position.coords.latitude;
+        userLongitude = position.coords.longitude;
+        console.log(userLatitude);
+
     }
 
-    function showPosition(position) {
-        x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
-    }
+
+    queryForm.addEventListener("submit", (event)=> {
+        const areaInput = document.getElementById("areaSearch").value;
+        const stopInput = document.getElementById("stopSearch").value;
+
+
+
+        event.preventDefault();
+        $.ajax({
+
+            type: "GET", url: 'http://localhost:8080/answer/' + areaInput +"/" + stopInput +"/"+ userLatitude+ "/" + userLongitude
+        })
+
+    } );
+
+    queryForm.reset();
+    // button.addEventListener("click", () => {
+    //     //alert("Click");
+    //
+    // });
+
+
 
 </script>
 <script>
@@ -46,21 +73,32 @@
     const url = 'http://localhost:8080/area';
     request.open("GET", url);
     request.send();
-    request.onload = () => {
+    request.onload = (e) => {
+        // let userData = e.target.value;
+
+
         const opts = request.response;
         const arrArea = JSON.parse(opts);
+
         arrArea.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`);
+
     }
 
-      function postUserArea() {
-        const areaInput  = document.getElementById("areaSelect").value;
+    function postUserArea() {
+        const areaInput = document.getElementById("areaSearch").value;
         console.log(areaInput);
-        //$.ajax ({type: "POST", url: 'http://localhost:8080/res/', data: areaInput}  );
-        $.ajax({type: "GET", url: 'http://localhost:8080/stop/', data: areaInput
-        }).done( function (response){response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
+        const stopSearch = document.getElementById("stopSearch");
+        stopSearch.innerHTML = "";
+
+        $.ajax({
+            type: "GET", url: 'http://localhost:8080/stop/' + areaInput
+        }).done(function (response) {
+            response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
 
         })
     }
+
+
 </script>
 
 

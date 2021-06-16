@@ -19,22 +19,33 @@ public class TransportSystemController {
     }
 
 
-//    @PostMapping("/res")
-//    public String g(@RequestBody String s) {
-//        System.out.println(s);
-//        return s;
-//    }
-
-
-    @GetMapping("/stop")
+    @GetMapping("/stop/{areaInput}")
     @ResponseBody
-    public ResponseEntity<List<String>> findAllStopsByArea(@RequestParam(value = "", required = false) String areaInput) {
-
+    public ResponseEntity<List<String>> findAllStopsByArea(
+            @PathVariable ("areaInput") String areaInput)
+    {
+        System.out.println(areaInput);
         System.out.println("Hello");
         System.out.println(transportSystemService.findallStopsThisArea(areaInput));
-
         return ResponseEntity.ok(transportSystemService.findallStopsThisArea(areaInput));
+    }
+    @GetMapping("/answer/{areaInput}/{stopInput}/{userLatitude}/{userLongitude}")
+    @ResponseBody
+    public ResponseEntity<List<String>>findAllNearestBusesByUserQuery(
 
+            @PathVariable ("areaInput")String areaInput,
+            @PathVariable ("stopInput")String stopInput,
+            @PathVariable ("userLatitude")String userLatitude,
+            @PathVariable ("userLongitude")String userLongitude)
+    {
+
+        System.out.println(transportSystemService.findAllBusesByUserQuery(stopInput));
+        System.out.println(areaInput);
+        System.out.println(stopInput);
+        System.out.println(userLatitude);
+        System.out.println(userLongitude);
+        System.out.println("findAllNearestBusesByUserQuery");
+        return ResponseEntity.ok(transportSystemService.findAllBusesByUserQuery(stopInput));
 
     }
 }

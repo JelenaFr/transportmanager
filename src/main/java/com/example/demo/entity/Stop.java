@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,19 +18,18 @@ import java.util.Date;
 @Table(name = "stops")
 public class Stop {
     @Id
-    @Column (name = "stop_id" )
+    @Column (name = "stop_id")
     private Integer id;
-    @Column (name = "stop_code" )
+    @Column (name = "stop_code")
     private String stopCode;
-    @Column (name = "stop_name" )
+    @Column (name = "stop_name")
     private String stopName;
-    @Column (name = "stop_lon" )
+    @Column (name = "stop_lon")
     private Double stopLongitude;
-    @Column (name = "stop_lat" )
+    @Column (name = "stop_lat")
     private Double stopLatitude;
-    @Column (name = "zone_id" )
+    @Column (name = "zone_id")
     private Integer zoneId;
-    private String alias;
     @Column (name = "stop_area" )
     private String stopArea;
     @Column (name = "stop_desc" )
@@ -40,6 +40,7 @@ public class Stop {
     private Float lestY;
     @Column (name = "zone_name" )
     private String zoneName;
+    private String alias;
     private Date time;
 
 

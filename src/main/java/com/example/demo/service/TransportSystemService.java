@@ -23,24 +23,18 @@ public class TransportSystemService {
     @Autowired
     private TripRepository tripRepository;
 
-    Location location = new Location();
-    String userIP = location.findUserIpAddress();
-    //location.findUserCoordinate(userIP).forEach(System.out::println);
-
-    public Iterable<Stop> findAllDistricts() {
-        return stopRepository.findAll();
-    }
-
-
-    public List<String> findUniqueStopAreas(){
+        public List<String> findUniqueStopAreas(){
         return stopRepository.findUniqueStopAreas().stream().sorted().collect(Collectors.toList());
     }
 
-    public List<String> findallStopsThisArea(String s) {
-        stopRepository.findStopsByStopArea(s).forEach(System.out::println);
-        return stopRepository.findStopsByStopArea(s);
+    public List<String> findallStopsThisArea(String area) {
+        stopRepository.findStopsByStopArea(area).forEach(System.out::println);
+        return stopRepository.findStopsByStopArea(area).stream().sorted().collect(Collectors.toList());
     }
 
-//    public Iterable<Object> findUserStops() {
-//    }
+    public List<String> findAllBusesByUserQuery(String s) {
+        routeRepository.findAllBusesByUserQuery(s).forEach(System.out::println);
+        return routeRepository.findAllBusesByUserQuery(s).stream().distinct().sorted().collect(Collectors.toList());
+    }
+
 }
