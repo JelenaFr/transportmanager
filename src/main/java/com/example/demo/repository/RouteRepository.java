@@ -11,13 +11,15 @@ import java.util.List;
 @Repository
 public interface RouteRepository extends CrudRepository<Route, String> {
 
-    
+
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT routes.route_short_name FROM routes " +
-            "RIGHT JOIN trips on routes.route_id = trips.route_id " +
-            "RIGHT JOIN stop_times on trips.trip_id = stop_times.trip_id " +
-            "RIGHT JOIN stops on stop_times.stop_id = stops.stop_id WHERE stops.stop_name = ?1")
-    List<String> findAllBusesByUserQuery(String stopName);
+            "LEFT JOIN trips on routes.route_id = trips.route_id " +
+            "LEFT JOIN stop_times on trips.trip_id = stop_times.trip_id " +
+            "LEFT JOIN stops on stop_times.stop_id = stops.stop_id WHERE stops.stop_area = ?1 and stops.stop_name = ?2")
+    List<String> findAllBusesByUserQuery(String areaInput, String stopInput);
+
+
 
 
 }

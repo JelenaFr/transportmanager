@@ -3,7 +3,6 @@ package com.example.demo.repository;
 import com.example.demo.entity.Stop;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +16,8 @@ public interface StopRepository extends CrudRepository<Stop, Integer> {
     @Query("SELECT DISTINCT a.stopName FROM Stop a WHERE a.stopArea = ?1")
     List<String> findStopsByStopArea(String areaInput);
 
-
+    @Query("SELECT a.stopName, a.stopLatitude, a.stopLongitude FROM Stop a WHERE  a.stopLatitude between ?1 and ?3 and a.stopLongitude between ?2 and ?4")
+    List<String>  findStopsByLocation (Double minLatitude, Double minLongitude, Double maxLatitude, Double maxLongitude);
 }
 
 
