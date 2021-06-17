@@ -4,30 +4,30 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 </head>
 <body>
 
-
-<p>Click the button to get your coordinates.</p>
-
-<div id="currentStop" ></div>
+<div class="container">
+<div class="jumbotron" id="currentStop"></div>
 
 
 <br>
 
 
-
-<div id="first">
-    <form id="userArea">
-        <input list="areaSelect" id="areaSearch" onchange="postUserArea()" name="areaSearch">
+<div class="jumbotron" id="first">
+    <form id="userArea" >
+        
+        <input list="areaSelect" id="areaSearch" name="areaSearch">
         <datalist id="areaSelect"></datalist>
-        <input list="stopSelect" id="stopSearch" name="stopSearch" autocomplete="off">
-        <datalist id="stopSelect" onchange="postUserStop()"></datalist>
-        <button id="btn" type="submit">Confirm</button>
-        <button id="btn-reset" input type="button" onClick="history.go(0)">New search</button>
+
+        <input list="stopSelect" id="stopSearch" name="stopSearch">
+        <datalist id="stopSelect"></datalist>
+        <button id="btn" class="btn btn-primary" type="submit">Confirm</button>
+        <button id="btn-reset" class="btn btn-primary" onClick="history.go(0)">New search</button>
 
     </form>
 </div>
@@ -38,104 +38,98 @@
 
     </form>
 
-
+</div>
 </div>
 <br>
 
 
 <script>
-    const x = document.getElementById("demo");
-    const button = document.getElementById("btn");
     const queryForm = document.getElementById("userArea");
-    const secondDiv = document.getElementById("second");
-    const newSearchButton = document.getElementById("btn-reset");
-    let userLatitude;
-    let userLongitude;
-    const stopInput = document.getElementById("stopSearch").value;
     const buttonForm = document.getElementById("buttonForm");
+    const button = document.getElementById("btn");
     const currentStop = document.getElementById("currentStop");
+    const areaInput = document.getElementById("areaSearch");
+    //const stopInput = document.getElementById("stopSearch").value;
+    //const areaInput = document.getElementById("areaSearch").value;
 
-
-
-
-    $(document).ready( function () {
-        window.onload = function nearestStopsByLocation() {
-            const areaInput = document.getElementById("areaSearch").value;
-            let minLatitude = userLatitude - (10/ 111.122);
-            let minLongitude = userLongitude - (10/111.12);
-            let maxLatitude = userLatitude + (10/111.122);
-            let maxLongitude = userLongitude + (10/ 111.12);
-            console.log(maxLatitude)
-            $.ajax({
-
-                type: "GET",
-                url: 'http://localhost:8080/location/' + minLatitude + "/" + minLongitude + "/" + maxLatitude + "/" + maxLongitude + "/" + userLatitude + "/" + userLongitude
-            }).done(function (response) {
-
-                currentStop.innerHTML += `<h2 value="${response}">${response}</h2>`;
-
-            })
-
-        }
-    });
-
-
-
-
+    getNearestStop();
+    getAllAreas();
+    getAllStopsByArea();
+    getBusesList();
+    reloadPage();
 
 
     navigator.geolocation.getCurrentPosition(showLocation);
+
     function showLocation(position) {
         userLatitude = position.coords.latitude;
         userLongitude = position.coords.longitude;
     }
-    queryForm.addEventListener("submit", (event) => {
-        const areaInput = document.getElementById("areaSearch").value;
-        const stopInput = document.getElementById("stopSearch").value;
 
-        event.preventDefault();
+
+    function getNearestStop() {
+        $(document).ready(function () {
+            window.onload = function nearestStopsByLocation() {
+                let minLatitude = userLatitude - (10 / 111.122);
+                let minLongitude = userLongitude - (10 / 111.12);
+                let maxLatitude = userLatitude + (10 / 111.122);
+                let maxLongitude = userLongitude + (10 / 111.12);
+                console.log(maxLatitude)
+                $.ajax({
+                    type: "GET",
+                    url: 'http://localhost:8080/location/' + minLatitude + "/" + minLongitude + "/" + maxLatitude + "/" + maxLongitude + "/" + userLatitude + "/" + userLongitude
+                }).done(function (response) {
+                    currentStop.innerHTML += `<h2 value="${response}">The nearest public transport stop is ${response}</h2>`;
+                })
+            }
+        });
+
+    }
+
+    function getAllAreas() {
         $.ajax({
-
             type: "GET",
-            url: 'http://localhost:8080/answer/' + areaInput + "/" + stopInput + "/" + userLatitude + "/" + userLongitude
+            url: 'http://localhost:8080/area'
         }).done(function (response) {
-            response.forEach(op => buttonForm.innerHTML += `<button value="${op}" id="busNum">${op}</button>`);
-
-        })
-        button.remove();
-    });
-
-
-</script>
-<script>
-    const request = new XMLHttpRequest();
-    const url = 'http://localhost:8080/area';
-    request.open("GET", url);
-    request.send();
-    request.onload = (e) => {
-        const opts = request.response;
-        const arrArea = JSON.parse(opts);
-        arrArea.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`);
-
-    }
-    function postUserArea() {
-        const areaInput = document.getElementById("areaSearch").value;
-
-
-        $.ajax({
-            type: "GET", url: 'http://localhost:8080/stop/' + areaInput
-        }).done(function (response) {
-            response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
-
+            response.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`)
         })
     }
 
+    function getBusesList() {
+        queryForm.addEventListener("submit", (event) => {
+            const areaInput = document.getElementById("areaSearch").value;
+            const stopInput = document.getElementById("stopSearch").value;
 
+            event.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: 'http://localhost:8080/answer/' + areaInput + "/" + stopInput + "/" + userLatitude + "/" + userLongitude
+            }).done(function (response) {
+                response.forEach(op => buttonForm.innerHTML += `<button value="${op}" class="btn btn-info" id="busNum">${op}</button>`);
+            })
+            button.remove();
+        });
 
+    }
 
+    function getAllStopsByArea() {
+        areaSearch.addEventListener("change", () => {
+            const areaInput = document.getElementById("areaSearch").value;
+            $.ajax({
+                type: "GET", url: 'http://localhost:8080/stop/' + areaInput
+            }).done(function (response) {
+                response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
+            })
+        })
+    }
 
+    function reloadPage() {
+        areaInput.addEventListener("click", () => {
+            if (areaInput.value.length > 0) {
+                window.history.go(0);
+            }
+        })
+    }
 </script>
-
-
 </body>
 </html>
