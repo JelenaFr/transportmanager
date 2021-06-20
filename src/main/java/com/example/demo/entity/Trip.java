@@ -32,8 +32,6 @@ public class Trip {
     private Integer wheelchairAccessible;
     @Column (name = "service_id")
     private Integer serviceId;
-//    @Column (name = "route_id")
-//    private Route routeId;
     private Date time;
 
     @OneToMany

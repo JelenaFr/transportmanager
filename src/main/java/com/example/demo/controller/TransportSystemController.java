@@ -22,48 +22,40 @@ public class TransportSystemController {
     }
 
 
-    @GetMapping("/stop/{areaInput}")
+    @GetMapping("/stop/{area}")
     @ResponseBody
     public ResponseEntity<List<String>> findAllStopsByArea(
-            @PathVariable("areaInput") String areaInput) {
-        return ResponseEntity.ok(transportSystemService.findallStopsThisArea(areaInput));
+            @PathVariable("area") String area) {
+        return ResponseEntity.ok(transportSystemService.findallStopsThisArea(area));
     }
 
-    @GetMapping("/answer/{areaInput}/{stopInput}/{userLatitude}/{userLongitude}")
+    @GetMapping("/buses/{area}/{stop}")
     @ResponseBody
-    public ResponseEntity<List<String>> findAllNearestBusesByUserQuery(
-
-            @PathVariable("areaInput") String areaInput,
-            @PathVariable("stopInput") String stopInput,
-            @PathVariable("userLatitude") String userLatitude,
-            @PathVariable("userLongitude") String userLongitude) {
-
-
-        return ResponseEntity.ok(transportSystemService.findAllBusesByUserQuery(areaInput, stopInput));
-
+    public ResponseEntity<List<String>> findAllNearestBusesByUserQuery(@PathVariable("area") String area,
+                                                                       @PathVariable("stop") String stop) {
+        return ResponseEntity.ok(transportSystemService.findAllBusesByUserQuery(area, stop));
     }
 
 
-    @GetMapping("/location/{minLatitude}/{minLongitude}/{maxLatitude}/{maxLongitude}/{userLatitude}/{userLongitude}")
+    @GetMapping("/location/{userLatitude}/{userLongitude}")
     @ResponseBody
-    public ResponseEntity<String> findUserNearestUserStopsByLocationAutomatically(
+    public ResponseEntity<String> findUserNearestUserStopsByLocationAutomatically(@PathVariable("userLatitude") Double userLatitude,
+                                                                                  @PathVariable("userLongitude") Double userLongitude) {
+        return ResponseEntity.ok(transportSystemService.findNearestStopsByLocation(userLatitude, userLongitude));
+    }
 
 
-            @PathVariable("minLatitude") Double minLatitude,
-            @PathVariable("minLongitude") Double minLongitude,
-            @PathVariable("maxLatitude") Double maxLatitude,
-            @PathVariable("maxLongitude") Double maxLongitude,
-            @PathVariable("userLatitude") Double userLatitude,
-            @PathVariable("userLongitude") Double userLongitude
+    @GetMapping("/timetable/{area}/{stop}/{bus}")
+    @ResponseBody
+    public ResponseEntity<List<String>> findCurrentStopTimetable(@PathVariable("area") String area,
+                                                                 @PathVariable("stop") String stopName,
+                                                                 @PathVariable("bus") String bus
+
+
     ) {
 
-
-        System.out.println(minLatitude);
-        System.out.println(minLongitude);
-        System.out.println(maxLatitude);
-        System.out.println(maxLongitude);
-
-        return ResponseEntity.ok(transportSystemService.findNearestStopsByLocation(minLatitude, minLongitude, maxLatitude, maxLongitude, userLatitude, userLongitude));
-
+        System.out.println(bus + " findCurrentStopTimetable " + stopName);
+        return ResponseEntity.ok(transportSystemService.findTimetableByAreaAndStopName(area, stopName, bus));
     }
+
 }

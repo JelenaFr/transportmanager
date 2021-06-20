@@ -31,8 +31,10 @@ public class TransportSystemService {
     }
 
     public List<String> findAllBusesByUserQuery(String areaInput, String stopInput) {
-        return routeRepository.findAllBusesByUserQuery(areaInput, stopInput)
-                .stream().distinct().sorted(Comparator.comparing(String::length).thenComparing(Comparator.naturalOrder())).collect(Collectors.toList());
+        return routeRepository.findAllBusesByUserQuery(areaInput, stopInput).stream()
+                .distinct()
+                .sorted(Comparator.comparing(String::length).thenComparing(Comparator.naturalOrder()))
+                .collect(Collectors.toList());
     }
 
     public Double findDistanceBetweenStops(Double lat1, Double lng1, Double lat2, Double lng2) {
@@ -48,7 +50,12 @@ public class TransportSystemService {
         return dist;
     }
 
-    public String findNearestStopsByLocation(Double minLatitude, Double minLongitude, Double maxLatitude, Double maxLongitude, Double userLatitude, Double userLongitude) {
+    public String findNearestStopsByLocation(Double userLatitude, Double userLongitude) {
+        Double minLatitude = userLatitude - (10 / 111.122);
+        Double minLongitude = userLongitude - (10 / 111.12);
+        Double maxLatitude = userLatitude + (10 / 111.122);
+        Double maxLongitude = userLongitude + (10 / 111.12);
+
         List<String> listWithAllNearestStops = stopRepository.findStopsByLocation(minLatitude, minLongitude, maxLatitude, maxLongitude);
         Map<Double, String> map = new HashMap<>();
         List<String[]> arrList = new ArrayList<>();
@@ -65,9 +72,10 @@ public class TransportSystemService {
                 .map(Map.Entry::getValue)
                 .get();
 
-
-        System.out.println(nearestStop);
-
         return nearestStop;
+    }
+
+    public List <String> findTimetableByAreaAndStopName(String area, String stop, String bus ) {
+        return null;
     }
 }

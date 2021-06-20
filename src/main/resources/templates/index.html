@@ -2,134 +2,152 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Bus manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 </head>
 <body>
+<header>
+    <h1>Bus manager</h1>
+</header>
 
 <div class="container">
-<div class="jumbotron" id="currentStop"></div>
 
 
-<br>
+    <br>
+    <!--    <div class="form-group" id="global">-->
+    <div id="currentStop"></div>
+    <form id="userArea">
+        <fieldset>
+            <label for="areaSearch">Choose area:</label>
+            <input list="areaSelect" id="areaSearch" name="areaSearch" autocomplete="off">
+            <datalist id="areaSelect"></datalist>
+            <label for="stopSearch">Choose stop:</label>
+            <input list="stopSelect" id="stopSearch" name="stopSearch" autocomplete="off">
+            <datalist id="stopSelect"></datalist>
+        </fieldset>
 
-
-<div class="jumbotron" id="first">
-    <form id="userArea" >
-        
-        <input list="areaSelect" id="areaSearch" name="areaSearch">
-        <datalist id="areaSelect"></datalist>
-
-        <input list="stopSelect" id="stopSearch" name="stopSearch">
-        <datalist id="stopSelect"></datalist>
-        <button id="btn" class="btn btn-primary" type="submit">Confirm</button>
+        <button id="btn-send" class="btn btn-primary">Confirm</button>
         <button id="btn-reset" class="btn btn-primary" onClick="history.go(0)">New search</button>
-
     </form>
+    <fieldset></fieldset>
+    <div id="second">
+        <form id="buttonForm">
+        </form>
+
+    </div>
+    <br>
+
 </div>
-<br>
-
-<div id="second">
-    <form id="buttonForm">
-
-    </form>
-
-</div>
-</div>
-<br>
-
 
 <script>
     const queryForm = document.getElementById("userArea");
     const buttonForm = document.getElementById("buttonForm");
-    const button = document.getElementById("btn");
+    const sendQueryButton = document.getElementById("btn-send");
     const currentStop = document.getElementById("currentStop");
     const areaInput = document.getElementById("areaSearch");
-    //const stopInput = document.getElementById("stopSearch").value;
-    //const areaInput = document.getElementById("areaSearch").value;
-
-    getNearestStop();
-    getAllAreas();
-    getAllStopsByArea();
-    getBusesList();
-    reloadPage();
-
-
-    navigator.geolocation.getCurrentPosition(showLocation);
-
-    function showLocation(position) {
-        userLatitude = position.coords.latitude;
-        userLongitude = position.coords.longitude;
-    }
+    const stopInput = document.getElementById("stopSearch");
+    const busInput = document.getElementById("busSearch");
+    const myStop = document.getElementById("myStop");
+    const second = document.getElementById("userArea");
+    let busDirForward = " + forward + ";
+    let busDirBack = " + back + ";
+    let nearestStop;
+    let busNumber;
 
 
-    function getNearestStop() {
-        $(document).ready(function () {
-            window.onload = function nearestStopsByLocation() {
-                let minLatitude = userLatitude - (10 / 111.122);
-                let minLongitude = userLongitude - (10 / 111.12);
-                let maxLatitude = userLatitude + (10 / 111.122);
-                let maxLongitude = userLongitude + (10 / 111.12);
-                console.log(maxLatitude)
-                $.ajax({
-                    type: "GET",
-                    url: 'http://localhost:8080/location/' + minLatitude + "/" + minLongitude + "/" + maxLatitude + "/" + maxLongitude + "/" + userLatitude + "/" + userLongitude
-                }).done(function (response) {
-                    currentStop.innerHTML += `<h2 value="${response}">The nearest public transport stop is ${response}</h2>`;
-                })
-            }
-        });
+    nearestStop = $(document).ready(function () {
+        navigator.geolocation.getCurrentPosition(showLocation);
 
+        function showLocation(position) {
+            getNearestStop(position.coords.latitude, position.coords.longitude);
+        }
+
+        getAllAreas();
+        getAllStopsByArea();
+        getBusesList();
+        getStopTimetable();
+
+    });
+
+
+    function getNearestStop(lat, long) {
+        $.ajax({
+            type: "GET",
+            url: 'http://localhost:8080/location/' + lat + "/" + long,
+            data: JSON
+        }).done(function (response) {
+            currentStop.innerHTML += `<h2 id= "myStop" "${response}">${response}</h2>`;
+
+        })
     }
 
     function getAllAreas() {
         $.ajax({
             type: "GET",
-            url: 'http://localhost:8080/area'
+            url: 'http://localhost:8080/area',
+            data: JSON
         }).done(function (response) {
             response.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`)
         })
     }
 
+    function getAllStopsByArea() {
+        areaSearch.addEventListener("change", () => {
+
+            const area = areaInput.value;
+            $.ajax({
+                type: "GET", url: 'http://localhost:8080/stop/' + area
+            }).done(function (response) {
+                response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
+            })
+
+        })
+    }
+
     function getBusesList() {
-        queryForm.addEventListener("submit", (event) => {
-            const areaInput = document.getElementById("areaSearch").value;
-            const stopInput = document.getElementById("stopSearch").value;
+        sendQueryButton.addEventListener("click", (event) => {
+            const area = areaInput.value;
+            const stop = stopInput.value;
 
             event.preventDefault();
             $.ajax({
                 type: "GET",
-                url: 'http://localhost:8080/answer/' + areaInput + "/" + stopInput + "/" + userLatitude + "/" + userLongitude
+                url: 'http://localhost:8080/buses/' + area + "/" + stop,
+                data: JSON
             }).done(function (response) {
-                response.forEach(op => buttonForm.innerHTML += `<button value="${op}" class="btn btn-info" id="busNum">${op}</button>`);
+                response.forEach(op => queryForm.innerHTML += `<button value="${op}"  type="click" id="${op}" onclick="getStopTimetable(this)" >${op}</button>`);
+                console.log(response);
             })
-            button.remove();
+
+            sendQueryButton.remove();
+        });
+    }
+
+    function getStopTimetable(param) {
+        const area = areaInput.value;
+        const stop = stopInput.value;
+        alert(param.id)
+        const bus = param.id.value;
+        console.log(bus);
+        $.ajax({
+            type: "GET",
+            url: 'http://localhost:8080/timetable/' + area + "/" + stop + "/" + bus ,
+            data: JSON
+        }).done(function (response) {
+            console.log(response);
+
         });
 
+
     }
 
-    function getAllStopsByArea() {
-        areaSearch.addEventListener("change", () => {
-            const areaInput = document.getElementById("areaSearch").value;
-            $.ajax({
-                type: "GET", url: 'http://localhost:8080/stop/' + areaInput
-            }).done(function (response) {
-                response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
-            })
-        })
-    }
 
-    function reloadPage() {
-        areaInput.addEventListener("click", () => {
-            if (areaInput.value.length > 0) {
-                window.history.go(0);
-            }
-        })
-    }
 </script>
 </body>
 </html>
