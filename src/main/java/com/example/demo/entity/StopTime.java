@@ -21,8 +21,6 @@ public class StopTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "time_id")
     private Integer id;
-//    @Column (name = "trip_id")
-//    private Trip tripId;
     @Column (name = "arrival_time")
     private Time arrivalTime;
     @Column (name = "departure_time")
@@ -33,8 +31,6 @@ public class StopTime {
     private Integer pickupType;
     @Column (name = "drop_off_type")
     private Integer dropOffType;
-//    @Column (name = "stop_id")
-//    private Stop stopID;
     private Date time;
 
     @OneToMany

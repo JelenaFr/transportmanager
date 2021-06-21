@@ -26,7 +26,7 @@ public class TransportSystemService {
         return stopRepository.findUniqueStopAreas().stream().sorted().collect(Collectors.toList());
     }
 
-    public List<String> findallStopsThisArea(String area) {
+    public List<String> findallStopsByArea(String area) {
         return stopRepository.findStopsByStopArea(area).stream().sorted().collect(Collectors.toList());
     }
 
@@ -75,7 +75,23 @@ public class TransportSystemService {
         return nearestStop;
     }
 
-    public List <String> findTimetableByAreaAndStopName(String area, String stop, String bus ) {
-        return null;
+    public List<List<String>> findTimetableByAreaByStopNameByBusNumber(String stop, String bus) {
+        List<String> list = stopTimeRepository.timetableByAreaByStopNameByBusNumber(stop, bus);
+        List<String> forward = list.stream().filter((string) -> string.startsWith("A"))
+                .map((string) -> string.substring(string.indexOf(",") + 1))
+                .limit(5)
+                .collect(Collectors.toList());
+
+        List<String> back = list.stream().filter((string) -> !string.startsWith("A"))
+                .map((string) -> string.substring(string.indexOf(",") + 1))
+                .limit(5)
+                .collect(Collectors.toList());
+        back.forEach(System.out::println);
+
+        List<List<String>> total = new ArrayList();
+        total.add(forward);
+        total.add(back);
+        total.forEach(System.out::println);
+        return total;
     }
 }

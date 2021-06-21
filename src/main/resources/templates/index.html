@@ -33,7 +33,7 @@
         </fieldset>
 
         <button id="btn-send" class="btn btn-primary">Confirm</button>
-        <button id="btn-reset" class="btn btn-primary" onClick="history.go(0)">New search</button>
+        <button id="btn-reset" class="btn btn-primary" >New search</button>
     </form>
     <fieldset></fieldset>
     <div id="second">
@@ -71,7 +71,7 @@
         getAllAreas();
         getAllStopsByArea();
         getBusesList();
-        getStopTimetable();
+
 
     });
 
@@ -129,15 +129,16 @@
         });
     }
 
+
+
     function getStopTimetable(param) {
-        const area = areaInput.value;
         const stop = stopInput.value;
-        alert(param.id)
-        const bus = param.id.value;
+        //alert(param.id)
+        const bus = param.id;
         console.log(bus);
         $.ajax({
             type: "GET",
-            url: 'http://localhost:8080/timetable/' + area + "/" + stop + "/" + bus ,
+            url: 'http://localhost:8080/timetable/' + stop + "/" + bus ,
             data: JSON
         }).done(function (response) {
             console.log(response);

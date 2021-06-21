@@ -16,7 +16,7 @@ public interface StopRepository extends CrudRepository<Stop, Integer> {
     @Query("SELECT DISTINCT a.stopName FROM Stop a WHERE a.stopArea = ?1")
     List<String> findStopsByStopArea(String areaInput);
 
-    @Query("SELECT a.stopName, a.stopLatitude, a.stopLongitude FROM Stop a WHERE  a.stopLatitude between ?1 and ?3 and a.stopLongitude between ?2 and ?4")
+    @Query("SELECT a.stopName, a.stopLatitude, a.stopLongitude FROM Stop a WHERE  a.stopLatitude between :minLatitude and :maxLatitude and a.stopLongitude between :minLongitude and :maxLongitude")
     List<String>  findStopsByLocation (Double minLatitude, Double minLongitude, Double maxLatitude, Double maxLongitude);
 }
 

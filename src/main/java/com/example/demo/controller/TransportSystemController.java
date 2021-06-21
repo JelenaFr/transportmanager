@@ -26,7 +26,7 @@ public class TransportSystemController {
     @ResponseBody
     public ResponseEntity<List<String>> findAllStopsByArea(
             @PathVariable("area") String area) {
-        return ResponseEntity.ok(transportSystemService.findallStopsThisArea(area));
+        return ResponseEntity.ok(transportSystemService.findallStopsByArea(area));
     }
 
     @GetMapping("/buses/{area}/{stop}")
@@ -45,17 +45,14 @@ public class TransportSystemController {
     }
 
 
-    @GetMapping("/timetable/{area}/{stop}/{bus}")
+    @GetMapping("/timetable/{stop}/{bus}")
     @ResponseBody
-    public ResponseEntity<List<String>> findCurrentStopTimetable(@PathVariable("area") String area,
+    public ResponseEntity<List<List<String>>> findCurrentStopTimetable(
                                                                  @PathVariable("stop") String stopName,
-                                                                 @PathVariable("bus") String bus
-
-
-    ) {
+                                                                 @PathVariable("bus") String bus) {
 
         System.out.println(bus + " findCurrentStopTimetable " + stopName);
-        return ResponseEntity.ok(transportSystemService.findTimetableByAreaAndStopName(area, stopName, bus));
+        return ResponseEntity.ok(transportSystemService.findTimetableByAreaByStopNameByBusNumber(stopName, bus));
     }
 
 }
