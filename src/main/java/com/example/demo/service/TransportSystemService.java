@@ -79,14 +79,16 @@ public class TransportSystemService {
         List<String> list = stopTimeRepository.timetableByAreaByStopNameByBusNumber(stop, bus);
         List<String> forward = list.stream().filter((string) -> string.startsWith("A"))
                 .map((string) -> string.substring(string.indexOf(",") + 1))
+               //.distinct()
                 .limit(5)
                 .collect(Collectors.toList());
 
         List<String> back = list.stream().filter((string) -> !string.startsWith("A"))
                 .map((string) -> string.substring(string.indexOf(",") + 1))
+               // .distinct()
                 .limit(5)
                 .collect(Collectors.toList());
-        back.forEach(System.out::println);
+
 
         List<List<String>> total = new ArrayList();
         total.add(forward);

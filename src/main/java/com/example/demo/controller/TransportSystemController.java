@@ -50,8 +50,6 @@ public class TransportSystemController {
     public ResponseEntity<List<List<String>>> findCurrentStopTimetable(
                                                                  @PathVariable("stop") String stopName,
                                                                  @PathVariable("bus") String bus) {
-
-        System.out.println(bus + " findCurrentStopTimetable " + stopName);
         return ResponseEntity.ok(transportSystemService.findTimetableByAreaByStopNameByBusNumber(stopName, bus));
     }
 
