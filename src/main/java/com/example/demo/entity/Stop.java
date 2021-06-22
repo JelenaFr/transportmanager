@@ -42,6 +42,4 @@ public class Stop {
     private String zoneName;
     private String alias;
     private Date time;
-
-
 }

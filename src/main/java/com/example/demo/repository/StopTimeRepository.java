@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface StopTimeRepository extends CrudRepository<Stop, Integer> {
-
-
     @Query(nativeQuery = true, value = " SELECT  direction_code, arrival_time  FROM stop_times \n" +
             "            LEFT JOIN stops on stops.stop_id = stop_times.stop_id  \n" +
             "            LEFT JOIN trips on trips.trip_id = stop_times.trip_id \n" +

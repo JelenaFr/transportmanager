@@ -35,7 +35,4 @@ public class Route {
     @Column (name = "competent_authority")
     private String competentAuthority;
     private Date time;
-
-
-
 }

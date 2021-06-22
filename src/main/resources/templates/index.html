@@ -42,22 +42,15 @@
         <div id="time"></div>
 
         <br>
-
-
     </form>
     <br>
-
-
 </div>
 
 <script>
-    const queryForm = document.getElementById("userArea");
     const sendQueryButton = document.getElementById("btn-send");
     const currentStop = document.getElementById("currentStop");
     const areaInput = document.getElementById("areaSearch");
     const stopInput = document.getElementById("stopSearch");
-    const time = document.getElementById("time");
-
 
     nearestStop = $(document).ready(function () {
         navigator.geolocation.getCurrentPosition(showLocation);
@@ -71,7 +64,6 @@
         getBusesList();
     });
 
-
     function getNearestStop(lat, long) {
         $.ajax({
             type: "GET",
@@ -79,9 +71,7 @@
             data: JSON
         }).done(function (response) {
             currentStop.innerHTML += `<h2 id= "myStop" "${response}">${response}</h2>`;
-
         })
-
     }
 
     function getAllAreas() {
@@ -106,13 +96,12 @@
             }).done(function (response) {
                 response.forEach(op => stopSelect.innerHTML += `<option value="${op}">${op}</option>`);
             })
-
         })
     }
 
     function getBusesList() {
-        document.getElementById("buttonSet").innerHTML = "";
         sendQueryButton.addEventListener("click", () => {
+            document.getElementById("buttonSet").innerHTML = "";
             const area = areaInput.value;
             const stop = stopInput.value;
             $.ajax({
@@ -166,12 +155,8 @@
                     document.getElementById("back").innerHTML += `<li>${myJSON[1][k]}</li>`;
                 }
             }
-
         });
-
-
     }
-
 
 </script>
 </body>

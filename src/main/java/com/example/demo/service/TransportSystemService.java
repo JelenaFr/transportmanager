@@ -63,9 +63,10 @@ public class TransportSystemService {
         for (String s : listWithAllNearestStops) {
             arrList.add(s.split(","));
         }
+
         for (String[] strings : arrList) {
             Double distance = findDistanceBetweenStops(userLatitude, userLongitude, Double.parseDouble(strings[1]), Double.parseDouble(strings[2]));
-            map.put(distance, strings[0]);
+            map.put(distance, strings[0]+" "+strings[3]);
         }
 
         String nearestStop = map.entrySet().stream().min(Comparator.comparingDouble(Map.Entry::getKey))
@@ -79,16 +80,13 @@ public class TransportSystemService {
         List<String> list = stopTimeRepository.timetableByAreaByStopNameByBusNumber(stop, bus);
         List<String> forward = list.stream().filter((string) -> string.startsWith("A"))
                 .map((string) -> string.substring(string.indexOf(",") + 1))
-               //.distinct()
                 .limit(5)
                 .collect(Collectors.toList());
 
         List<String> back = list.stream().filter((string) -> !string.startsWith("A"))
                 .map((string) -> string.substring(string.indexOf(",") + 1))
-               // .distinct()
                 .limit(5)
                 .collect(Collectors.toList());
-
 
         List<List<String>> total = new ArrayList();
         total.add(forward);

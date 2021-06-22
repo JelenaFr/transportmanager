@@ -40,9 +40,4 @@ public class StopTime {
     @OneToMany
     @JoinColumn(name = "trip_id")
     private List<Trip> trips;
-
-
-
-
-
 }

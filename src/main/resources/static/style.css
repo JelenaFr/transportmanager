@@ -22,8 +22,6 @@ h1 {
     font-size: 25px;
 }
 
-
-
 select {
     width: 120px;
     padding: 3px 6px;
@@ -66,10 +64,12 @@ div {
     color: rgb(0,79,86);
     user-select: none;
 }
+
 .btn:hover {
     color: rgb(0,59,66);
     cursor: pointer;
 }
+
 .btn:active {
     padding-bottom: 1px;
     box-shadow:

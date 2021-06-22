@@ -21,7 +21,6 @@ public class TransportSystemController {
         return ResponseEntity.ok(transportSystemService.findUniqueStopAreas());
     }
 
-
     @GetMapping("/stop/{area}")
     @ResponseBody
     public ResponseEntity<List<String>> findAllStopsByArea(
@@ -36,14 +35,12 @@ public class TransportSystemController {
         return ResponseEntity.ok(transportSystemService.findAllBusesByUserQuery(area, stop));
     }
 
-
     @GetMapping("/location/{userLatitude}/{userLongitude}")
     @ResponseBody
     public ResponseEntity<String> findUserNearestUserStopsByLocationAutomatically(@PathVariable("userLatitude") Double userLatitude,
                                                                                   @PathVariable("userLongitude") Double userLongitude) {
         return ResponseEntity.ok(transportSystemService.findNearestStopsByLocation(userLatitude, userLongitude));
     }
-
 
     @GetMapping("/timetable/{stop}/{bus}")
     @ResponseBody
@@ -52,5 +49,4 @@ public class TransportSystemController {
                                                                  @PathVariable("bus") String bus) {
         return ResponseEntity.ok(transportSystemService.findTimetableByAreaByStopNameByBusNumber(stopName, bus));
     }
-
 }

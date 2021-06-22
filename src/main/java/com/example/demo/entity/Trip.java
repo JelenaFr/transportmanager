@@ -37,5 +37,4 @@ public class Trip {
     @OneToMany
     @JoinColumn(name = "route_id")
     private List<Route> routes;
-
 }
