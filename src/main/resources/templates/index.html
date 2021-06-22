@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -17,36 +17,37 @@
 </header>
 
 <div class="container">
-
-
     <br>
-
     <div id="currentStop"></div>
 
     <form id="userArea">
         <fieldset id="selectSet" data-s="1">
             <label for="areaSearch">Choose area:</label>
-            <input list="areaSelect" id="areaSearch" name="areaSearch" autocomplete="off" class="chosen-select" >
+            <input list="areaSelect" id="areaSearch" name="areaSearch" autocomplete="off" onfocus="this.value=''"
+                   onchange="this.blur()" class="chosen-select">
             <datalist id="areaSelect"></datalist>
             <label for="stopSearch">Choose stop:</label>
-            <input list="stopSelect" id="stopSearch" name="stopSearch" autocomplete="off" class="chosen-select">
+            <input list="stopSelect" id="stopSearch" name="stopSearch" autocomplete="off" onfocus="this.value=''"
+                   onchange="this.blur();" class="chosen-select">
             <datalist id="stopSelect"></datalist>
             <button id="btn-send" type="button" class="btn btn-primary">Confirm</button>
+            <button id="btn-reset" type="submit" onClick="history.go(0)" class="btn btn-primary">Again</button>
+            <br>
         </fieldset>
+        <br>
 
         <fieldset id="buttonSet"></fieldset>
-        <div id="second">
-            <form id="buttonForm">
-
-            </form>
-            <div id="time">
-                <!--                <div id="forward" class="time-block"></div>-->
-                <!--                <div id="back" class="time-block"></div>-->
-            </div>
-        </div>
         <br>
-        <button id="btn-reset" type="submit" onClick="history.go(0)" class="btn btn-primary">New search</button>
+        <form id="buttonForm"></form>
+        <div id="time"></div>
+
+        <br>
+
+
     </form>
+    <br>
+
+
 </div>
 
 <script>
@@ -63,17 +64,11 @@
 
         function showLocation(position) {
             getNearestStop(position.coords.latitude, position.coords.longitude);
-
-
         }
-
-
 
         getAllAreas();
         getAllStopsByArea();
         getBusesList();
-
-
     });
 
 
@@ -90,22 +85,20 @@
     }
 
     function getAllAreas() {
-
-
-
         $.ajax({
             type: "GET",
             url: 'http://localhost:8080/area',
             data: JSON
         }).done(function (response) {
-
-            // areaSelect.innerHTML += `<option value="" selected="selected"> --- </option>`;
             response.forEach(op => areaSelect.innerHTML += `<option value="${op}">${op}</option>`);
         })
     }
 
     function getAllStopsByArea() {
-        areaSearch.addEventListener("change", () => {
+        areaSearch.addEventListener("change", (event) => {
+            document.getElementById("stopSelect").innerHTML = "";
+            document.getElementById("buttonSet").innerHTML = "";
+            document.getElementById("time").innerHTML = "";
 
             const area = areaInput.value;
             $.ajax({
@@ -119,10 +112,9 @@
 
     function getBusesList() {
         document.getElementById("buttonSet").innerHTML = "";
-        sendQueryButton.addEventListener("click", (event) => {
+        sendQueryButton.addEventListener("click", () => {
             const area = areaInput.value;
             const stop = stopInput.value;
-            // event.preventDefault();
             $.ajax({
                 type: "GET",
                 url: 'http://localhost:8080/buses/' + area + "/" + stop,
@@ -130,10 +122,8 @@
             }).done(function (response) {
                 let set = document.createElement('fieldset');
                 set.id = 'buttonSet';
-                //set.className = 'time-block';
-
                 ('buttonSet').innerHTML;
-                response.forEach(op => buttonSet.innerHTML += `<button value="${op}" input type="button"  id="${op}" onclick="getStopTimetable(this)" >${op}</button>`);
+                response.forEach(op => buttonSet.innerHTML += `<button value="${op}" input type="button" class="btn"  id="${op}" onclick="getStopTimetable(this)" >${op}</button>`);
                 console.log(response);
             })
         });
@@ -158,22 +148,18 @@
             iDiv2.id = 'back';
             iDiv2.className = 'time-block';
             iDiv2.title = 'Back';
-            // let h1 = document.createElement('h4');
-            // h4.textContent = "Forward";
-            // let h2 = document.createElement('h4');
-            // h4.textContent = "back";
             document.getElementById('time').appendChild(iDiv1);
             document.getElementById('time').appendChild(iDiv2);
-
             document.getElementById("forward").innerHTML = "";
+            document.getElementById("forward").innerHTML += `<label for="forward">Forward</label>`;
+
             for (let k = 0; k < myJSON[0].length; k++) {
-
                 if (myJSON[0][k].length > 0) {
-
                     document.getElementById("forward").innerHTML += `<li>${myJSON[0][k]}</li>`;
                 }
             }
             document.getElementById("back").innerHTML = "";
+            document.getElementById("back").innerHTML += `<label for="back">Back</label>`;
             for (let k = 0; k < myJSON[1].length; k++) {
                 if (myJSON[1][k].length > 0) {
 
